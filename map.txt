@@ -1,0 +1,3 @@
+	modified:   web/channels/room_channel.ex
+	modified:   web/static/js/socket.js
+	modified:   web/templates/chat/index.html.eex

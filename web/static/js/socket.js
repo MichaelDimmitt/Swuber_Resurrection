@@ -3,30 +3,45 @@
 
 // To use Phoenix channels, the first step is to import Socket
 // and connect at the socket path in "lib/my_app/endpoint.ex":
-import {Socket} from "phoenix"
+import {
+  Socket
+} from "phoenix"
 
-let socket = new Socket("/socket", {params: {token: window.userToken}})
-
+let socket = new Socket("/socket", {
+  params: {
+    token: window.userToken
+  }
+})
 socket.connect()
 
 // Now that you are connected, you can join channels with a topic:
 let channel = socket.channel("room:lobby", {})
-let chatInput         = document.querySelector("#message-input")
-let messagesContainer = document.querySelector("#messages")
 
-if(chatInput){
-chatInput.addEventListener("keypress", event => {
-	  if(event.keyCode === 13){
-		      channel.push("new_msg", {body: chatInput.value})
-			          chatInput.value = ""				    }
-})}
+let chatInput = document.querySelector("#message-input")
+if (chatInput) {
+  chatInput.addEventListener("keypress", event => {
+    if (event.keyCode === 13) {
+      channel.push("new_msg", {
+        body: chatInput.value
+      })
+      chatInput.value = ""
+    }
+  })
+}
+
+let messagesContainer = document.querySelector("#messages")
 channel.on("new_msg", payload => {
-	  let messageItem = document.createElement("li");
-	    messageItem.innerText = `[${Date()}] ${payload.body}`
-		      messagesContainer.appendChild(messageItem)
+  let messageItem = document.createElement("div");
+  messageItem.innerText = `${payload.body}`
+  messagesContainer.appendChild(messageItem)
 })
+
 channel.join()
-  .receive("ok", resp => { console.log("Joined successfully", resp) })
-  .receive("error", resp => { console.log("Unable to join", resp) })
+  .receive("ok", resp => {
+    console.log("Joined successfully", resp)
+  })
+  .receive("error", resp => {
+    console.log("Unable to join", resp)
+  })
 
 export default socket
